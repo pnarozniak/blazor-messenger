@@ -17,7 +17,7 @@ namespace messanger.Server.Models
         }
 
 
-        public int IdAvatar { get; set; }
+        public int? IdAvatar { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime Birthdate { get; set; }

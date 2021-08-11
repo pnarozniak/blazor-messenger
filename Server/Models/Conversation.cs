@@ -11,7 +11,7 @@ namespace messanger.Server.Models
         }
 
         public int IdConversation { get; set; }
-        public int IdAvatar { get; set; }
+        public int? IdAvatar { get; set; }
         public string Name { get; set; }
 
         public virtual File IdAvatarNavigation { get; set; }
