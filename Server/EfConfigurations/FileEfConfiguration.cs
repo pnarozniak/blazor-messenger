@@ -23,18 +23,20 @@ namespace messanger.Server.EfConfigurations
             builder.HasOne(f => f.IdUserNavigation)
                 .WithOne(u => u.IdAvatarNavigation)
                 .HasForeignKey<User>(u => u.IdAvatar)
+                .IsRequired(false)
                 .HasConstraintName("User_AvatarFile");
 
             builder.HasOne(f => f.IdConversationNavigation)
                 .WithOne(c => c.IdAvatarNavigation)
                 .HasForeignKey<Conversation>(c => c.IdAvatar)
+                .IsRequired(false)
                 .HasConstraintName("Conversation_AvatarFile");
 
             builder.HasOne(f => f.IdMessageNavigation)
                 .WithMany(m => m.AttachedFiles)
                 .HasForeignKey(f => f.IdMessage)
-                .HasConstraintName("Message_AttachedFiles")
-                .IsRequired(false);
+                .IsRequired(false)
+                .HasConstraintName("Message_AttachedFiles");
         }
     }
 }
