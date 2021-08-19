@@ -1,17 +1,24 @@
 using System;
+using System.Linq;
 using messanger.Server.Data;
+using messanger.Server.Hubs;
 using messanger.Server.Models;
 using messanger.Server.Repositories.Implementations;
 using messanger.Server.Repositories.Interfaces;
 using messanger.Server.Services.Implementations;
 using messanger.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace messanger.Server
 {
@@ -46,20 +53,34 @@ namespace messanger.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+            services.TryAddEnumerable(
+                ServiceDescriptor.Singleton<IPostConfigureOptions<JwtBearerOptions>,
+                    ConfigureJwtBearerOptions>());
 
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddSignalR();
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
+
             services.AddHttpContextAccessor();
+            services.AddSingleton<IUserIdProvider, IdBasedUserIdProvider>();
             services.AddScoped<ILoggedUserService, LoggedUserService>();
 
             services.AddScoped<IFriendshipRequestsRepository, FriendshipRequestsRepository>();
             services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -85,6 +106,7 @@ namespace messanger.Server
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<NotificationsHub>("/hub/notifications");
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");

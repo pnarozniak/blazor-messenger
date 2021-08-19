@@ -1,14 +1,13 @@
-﻿using System;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using messanger.Server.Hubs;
 using messanger.Server.Repositories.Interfaces;
 using messanger.Server.Services.Interfaces;
 using messanger.Shared.DTOs;
+using messanger.Shared.DTOs.Responses;
+using messanger.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using messanger.Server.Hubs;
-using messanger.Shared.Helpers;
-using messanger.Shared.DTOs.Responses;
 using Microsoft.AspNetCore.SignalR;
 
 namespace messanger.Server.Controllers
@@ -20,13 +19,19 @@ namespace messanger.Server.Controllers
     {
         private readonly IFriendshipRequestsRepository _friendshipRequestsRepository;
         private readonly string _idUser;
+        private readonly IHubContext<NotificationsHub, INotificationsHub> _notificationsHubContext;
+        private readonly IUsersRepository _usersRepository;
 
         public FriendshipRequestsController(
             IFriendshipRequestsRepository friendshipRequestsRepository,
-            ILoggedUserService loggedUserService)
+            ILoggedUserService loggedUserService,
+            IUsersRepository usersRepository,
+            IHubContext<NotificationsHub, INotificationsHub> notificationsHubContext)
         {
             _friendshipRequestsRepository = friendshipRequestsRepository;
             _idUser = loggedUserService.LoggedUser.FindFirstValue(ClaimTypes.NameIdentifier);
+            _usersRepository = usersRepository;
+            _notificationsHubContext = notificationsHubContext;
         }
 
         [HttpGet("received")]
@@ -64,6 +69,11 @@ namespace messanger.Server.Controllers
             if (createStatus != CreateFriendshipRequestStatus.CREATED)
                 return Conflict(new CreateFriendshipRequestResponseDto { Status = createStatus });
 
+            var senderDetails = await _usersRepository.GetUserByIdAsync(_idUser);
+            if (senderDetails is not null)
+                await _notificationsHubContext.Clients.User(createDto.IdReceiver)
+                    .NewFriendshipRequest(senderDetails);
+
             return NoContent();
         }
 
@@ -73,7 +83,7 @@ namespace messanger.Server.Controllers
             var isDeleted = await _friendshipRequestsRepository.DeleteFriendshipRequestAsync(
                 _idUser, idReceiver);
 
-            return @isDeleted switch
+            return isDeleted switch
             {
                 true => NoContent(),
                 false => NotFound()
@@ -86,7 +96,7 @@ namespace messanger.Server.Controllers
             var isRejected = await _friendshipRequestsRepository.DeleteFriendshipRequestAsync(
                 idSender, _idUser);
 
-            return @isRejected switch
+            return isRejected switch
             {
                 true => NoContent(),
                 false => NotFound()
@@ -99,7 +109,7 @@ namespace messanger.Server.Controllers
             var isAccepted = await _friendshipRequestsRepository.AcceptFriendshipRequestAsync(
                 idSender, _idUser);
 
-            return @isAccepted switch
+            return isAccepted switch
             {
                 true => NoContent(),
                 false => NotFound()
