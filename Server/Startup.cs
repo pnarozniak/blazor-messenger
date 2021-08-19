@@ -1,5 +1,10 @@
+using System;
 using messanger.Server.Data;
 using messanger.Server.Models;
+using messanger.Server.Repositories.Implementations;
+using messanger.Server.Repositories.Interfaces;
+using messanger.Server.Services.Implementations;
+using messanger.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,8 +29,12 @@ namespace messanger.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                {
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection"));
+                    options.LogTo(Console.WriteLine);
+                }
+            );
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -40,6 +49,12 @@ namespace messanger.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<ILoggedUserService, LoggedUserService>();
+
+            services.AddScoped<IFriendshipRequestsRepository, FriendshipRequestsRepository>();
+            services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
