@@ -12,6 +12,7 @@ namespace messanger.Server.Services.Implementations
             _httpContext = httpContextAccessor.HttpContext;
         }
 
-        public ClaimsPrincipal LoggedUser => _httpContext.User;
+        public ClaimsPrincipal Claims => _httpContext.User;
+        public string Id => _httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 }
