@@ -16,7 +16,7 @@ namespace messanger.Server.EfConfigurations
             builder.Property(c => c.IdConversation)
                 .UseIdentityColumn();
 
-            builder.Property(c => c.Name).IsRequired().HasMaxLength(64);
+            builder.Property(c => c.Name).IsRequired(false).HasMaxLength(64);
 
             builder.HasMany(c => c.Messages)
                 .WithOne(m => m.IdConversationNavigation)

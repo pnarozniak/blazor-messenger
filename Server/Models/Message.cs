@@ -18,6 +18,7 @@ namespace messanger.Server.Models
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
 
+        public virtual User IdSenderNavigation { get; set; }
         public virtual Conversation IdConversationNavigation { get; set; }
         public virtual Message IdParentMessageNavigation { get; set; }
         public virtual ICollection<Message> ChildrenMessages { get; set; }

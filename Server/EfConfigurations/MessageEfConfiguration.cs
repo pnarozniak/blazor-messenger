@@ -26,6 +26,11 @@ namespace messanger.Server.EfConfigurations
                 .WithMany(pm => pm.ChildrenMessages)
                 .HasForeignKey(m => m.IdParentMessage)
                 .HasConstraintName("Message_ParentMessage");
+
+            builder.HasOne(m => m.IdSenderNavigation)
+                .WithMany(s => s.SentMessages)
+                .HasForeignKey(m => m.IdSender)
+                .HasConstraintName("Message_Sender");
         }
     }
 }
