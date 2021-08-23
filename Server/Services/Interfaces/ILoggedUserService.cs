@@ -4,6 +4,7 @@ namespace messanger.Server.Services.Interfaces
 {
     public interface ILoggedUserService
     {
-        ClaimsPrincipal LoggedUser { get; }
+        ClaimsPrincipal Claims { get; }
+        string Id { get; }
     }
 }
