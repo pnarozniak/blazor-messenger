@@ -74,6 +74,7 @@ namespace messanger.Server
             services.AddScoped<IFriendshipRequestsRepository, FriendshipRequestsRepository>();
             services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IConversationsRepository, ConversationsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
