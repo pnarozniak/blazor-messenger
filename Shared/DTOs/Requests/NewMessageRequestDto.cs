@@ -6,5 +6,8 @@ namespace messanger.Shared.DTOs.Requests
     {
         [Required]
         public string Content { get; set; }
+
+        [Required]
+        public int? IdConversation { get; set; }
     }
 }
