@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using messanger.Shared.DTOs;
 using messanger.Shared.DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ namespace messanger.Server.Hubs
     {
         public Task NewFriendshipRequest(UserResponseDto sender);
         public Task NewMessage(int idConversation, MessageResponseDto message);
+        public Task MessageDeleted(int idMessage, int idConversation, DateTime messageDeletedAt);
     }
 
     [Authorize]
