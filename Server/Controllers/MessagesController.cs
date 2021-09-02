@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using messanger.Server.Hubs;
 using messanger.Server.Repositories.Interfaces;
 using messanger.Server.Services.Interfaces;
@@ -45,6 +46,25 @@ namespace messanger.Server.Controllers
 
             await _notificationsHubContext.Clients.Users(conversationMembersIds)
                 .NewMessage((int)newMessage.IdConversation, addedMessage);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{idMessage:int}")]
+        public async Task<IActionResult> DeleteMessage(
+            [FromRoute] int idMessage)
+        {
+            var deletedMessage = await _messagesRepository.DeleteMessageAsync
+                (idMessage, _loggedUserService.Id);
+
+            if (deletedMessage is null)
+                return NotFound();
+
+            var conversationMembersIds = await _conversationsRepository
+                .GetConversationMembersIdsAsync(deletedMessage.IdConversation);
+
+            await _notificationsHubContext.Clients.Users(conversationMembersIds)
+                .MessageDeleted(idMessage, deletedMessage.IdConversation, (DateTime)deletedMessage.DeletedAt);
 
             return NoContent();
         }
