@@ -59,5 +59,22 @@ namespace messanger.Server.Repositories.Implementations
                     }).SingleOrDefaultAsync()
             };
         }
+
+        public async Task<Message> DeleteMessageAsync(int idMessage, string idSender)
+        {
+            var message = await _context.Messages
+                .SingleOrDefaultAsync
+                    (m => m.IdMessage == idMessage && m.IdSenderNavigation.Id == idSender);
+
+            if (message is null)
+                return null;
+
+            if (message.DeletedAt is not null)
+                return null;
+
+            message.DeletedAt = DateTime.Now;
+
+            return await _context.SaveChangesAsync() > 0 ? message : null;
+        }
     }
 }
