@@ -45,7 +45,8 @@ namespace messanger.Server.Repositories.Implementations
                         {
                             IdMessage = m.IdMessage,
                             Content = m.Content,
-                            CreatedAt = m.CreatedAt
+                            CreatedAt = m.CreatedAt,
+                            DeletedAt = m.DeletedAt
                         }).FirstOrDefault()
                 })
                 .Skip(skip)
@@ -108,6 +109,7 @@ namespace messanger.Server.Repositories.Implementations
                     IdMessage = m.IdMessage,
                     Content = m.Content,
                     CreatedAt = m.CreatedAt,
+                    DeletedAt = m.DeletedAt,
                     Sender = new UserResponseDto
                     {
                         IdUser = m.IdSenderNavigation.Id,
