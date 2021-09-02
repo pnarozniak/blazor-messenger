@@ -17,6 +17,7 @@ namespace messanger.Server.Models
         public string IdSender { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
         public virtual User IdSenderNavigation { get; set; }
         public virtual Conversation IdConversationNavigation { get; set; }
