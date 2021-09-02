@@ -22,6 +22,8 @@ namespace messanger.Server.EfConfigurations
 
             builder.Property(m => m.CreatedAt).IsRequired();
 
+            builder.Property(m => m.DeletedAt).IsRequired(false).HasDefaultValue(null);
+
             builder.HasOne(m => m.IdParentMessageNavigation)
                 .WithMany(pm => pm.ChildrenMessages)
                 .HasForeignKey(m => m.IdParentMessage)
