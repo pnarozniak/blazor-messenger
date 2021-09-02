@@ -8,5 +8,6 @@ namespace messanger.Shared.DTOs.Responses
         public UserResponseDto Sender { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
 }
