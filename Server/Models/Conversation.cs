@@ -13,6 +13,7 @@ namespace messanger.Server.Models
         public int IdConversation { get; set; }
         public int? IdAvatar { get; set; }
         public string Name { get; set; }
+        public bool IsPrivate { get; set; }
 
         public virtual File IdAvatarNavigation { get; set; }
         public virtual ICollection<ConversationMember> ConversationMembers { get; set; }

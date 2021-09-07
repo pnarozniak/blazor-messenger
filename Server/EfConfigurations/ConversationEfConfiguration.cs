@@ -18,6 +18,8 @@ namespace messanger.Server.EfConfigurations
 
             builder.Property(c => c.Name).IsRequired(false).HasMaxLength(64);
 
+            builder.Property(c => c.IsPrivate).IsRequired();
+
             builder.HasMany(c => c.Messages)
                 .WithOne(m => m.IdConversationNavigation)
                 .HasForeignKey(m => m.IdConversation)
