@@ -1,4 +1,4 @@
-﻿namespace messanger.Shared.DTOs
+﻿namespace messanger.Shared.DTOs.Responses
 {
     public class UserResponseDto
     {
