@@ -25,14 +25,14 @@ namespace messanger.Server.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetFriends(
-            [FromQuery] GetDataRequestDto getDataRequest)
+            [FromQuery] GetFriendsRequestDto getDto)
         {
-            if (getDataRequest.Filter is not null)
-                return Ok(await _friendshipsRepository.GetUserFriendsByFilterAsync(
-                    _loggedUserService.Id, getDataRequest.Filter));
+            if (getDto.Filter is null)
+                return Ok(await _friendshipsRepository.GetUserFriendsAsync(
+                    _loggedUserService.Id, getDto.Skip));
 
-            return Ok(await _friendshipsRepository.GetUserFriendsAsync(
-                _loggedUserService.Id, getDataRequest.Skip));
+            return Ok(await _friendshipsRepository.GetUserFriendsByFilterAsync(
+                _loggedUserService.Id, getDto));
         }
     }
 }

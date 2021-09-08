@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using messanger.Server.Data;
 using messanger.Server.Helpers;
 using messanger.Server.Repositories.Interfaces;
-using messanger.Shared.DTOs;
 using messanger.Shared.DTOs.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,7 +21,7 @@ namespace messanger.Server.Repositories.Implementations
         public async Task<IEnumerable<ConversationResponseDto>> GetUserRecentConversationsAsync
             (string idUser, int skip)
         {
-            const int takeConversations = 10;
+            const int takeConversations = 2;
             const int takeConversationMembers = 5;
 
             return await _context.Conversations
@@ -46,7 +45,13 @@ namespace messanger.Server.Repositories.Implementations
                             IdMessage = m.IdMessage,
                             Content = m.Content,
                             CreatedAt = m.CreatedAt,
-                            DeletedAt = m.DeletedAt
+                            DeletedAt = m.DeletedAt,
+                            Sender = new UserResponseDto
+                            {
+                                IdUser = m.IdSenderNavigation.Id,
+                                FirstName = m.IdSenderNavigation.FirstName,
+                                LastName = m.IdSenderNavigation.LastName
+                            }
                         }).FirstOrDefault()
                 })
                 .Skip(skip)

@@ -1,15 +1,14 @@
-﻿using messanger.Server.Data;
-using messanger.Shared.Helpers;
-using messanger.Server.Models;
-using messanger.Server.Repositories.Interfaces;
-using messanger.Shared.DTOs;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using messanger.Server.Data;
+using messanger.Server.Models;
+using messanger.Server.Repositories.Interfaces;
+using messanger.Shared.DTOs.Responses;
+using messanger.Shared.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace messanger.Server.Repositories.Implementations
 {
@@ -26,7 +25,8 @@ namespace messanger.Server.Repositories.Implementations
             _friendshipsRepository = friendshipsRepository;
         }
 
-        public async Task<IEnumerable<FriendshipRequestResponseDto>> GetSentFriendshipRequestsAsync(string idUser, int skip)
+        public async Task<IEnumerable<FriendshipRequestResponseDto>> GetSentFriendshipRequestsAsync(string idUser,
+            int skip)
         {
             return await SelectFriendshipRequestsWhereAsync(
                 skip,
@@ -43,7 +43,8 @@ namespace messanger.Server.Repositories.Implementations
                 });
         }
 
-        public async Task<IEnumerable<FriendshipRequestResponseDto>> GetReceivedFriendshipRequestsAsync(string idUser, int skip)
+        public async Task<IEnumerable<FriendshipRequestResponseDto>> GetReceivedFriendshipRequestsAsync(string idUser,
+            int skip)
         {
             return await SelectFriendshipRequestsWhereAsync(
                 skip,
@@ -60,7 +61,8 @@ namespace messanger.Server.Repositories.Implementations
                 });
         }
 
-        public async Task<CreateFriendshipRequestStatus> CreateFriendshipRequestAsync(string idSender, string idReceiver)
+        public async Task<CreateFriendshipRequestStatus> CreateFriendshipRequestAsync(string idSender,
+            string idReceiver)
         {
             if (await _friendshipsRepository.AreUsersInFriendshipAsync(idSender, idReceiver))
                 return CreateFriendshipRequestStatus.ALREADY_FRIENDS;
@@ -134,7 +136,8 @@ namespace messanger.Server.Repositories.Implementations
         }
 
         private async Task<IEnumerable<FriendshipRequestResponseDto>> SelectFriendshipRequestsWhereAsync
-            (int skip, Expression<Func<FriendshipRequest, bool>> whereExpression, Expression<Func<FriendshipRequest, FriendshipRequestResponseDto>> selectExpression)
+        (int skip, Expression<Func<FriendshipRequest, bool>> whereExpression,
+            Expression<Func<FriendshipRequest, FriendshipRequestResponseDto>> selectExpression)
         {
             const int take = 10;
 
