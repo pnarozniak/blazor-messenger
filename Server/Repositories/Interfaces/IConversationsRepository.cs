@@ -17,5 +17,8 @@ namespace messanger.Server.Repositories.Interfaces
 
         public Task<IEnumerable<string>> GetConversationMembersIdsAsync
             (int idConversation);
+
+        public Task<int?> GetPrivateConversationIdBetweenUsersAsync
+            (string idUser1, string idUser2);
     }
 }

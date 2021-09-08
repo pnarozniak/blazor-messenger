@@ -47,5 +47,15 @@ namespace messanger.Server.Controllers
 
             return Ok(messages);
         }
+
+        [HttpGet("users/{idUser}")]
+        public async Task<IActionResult> GetPrivateConversationIdWithUser(
+            [FromRoute] string idUser)
+        {
+            var idConversation = await _conversationsRepository.GetPrivateConversationIdBetweenUsersAsync(
+                _loggedUserService.Id, idUser);
+
+            return idConversation is null ? NoContent() : Ok(idConversation);
+        }
     }
 }

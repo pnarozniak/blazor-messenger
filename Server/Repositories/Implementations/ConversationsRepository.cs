@@ -132,5 +132,15 @@ namespace messanger.Server.Repositories.Implementations
                 .Select(cm => cm.IdUserNavigation.Id)
                 .ToListAsync();
         }
+
+        public async Task<int?> GetPrivateConversationIdBetweenUsersAsync
+            (string idUser1, string idUser2)
+        {
+            return await _context.Conversations
+                .Where(c => c.IsPrivate)
+                .Where(c => c.ConversationMembers.All(cm => cm.IdUser == idUser1 || cm.IdUser == idUser2))
+                .Select(c => (int?)c.IdConversation)
+                .FirstOrDefaultAsync();
+        }
     }
 }
