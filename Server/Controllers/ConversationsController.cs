@@ -25,14 +25,14 @@ namespace messanger.Server.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetConversations(
-            [FromQuery] GetDataRequestDto getDataRequest)
+            [FromQuery] GetConversationsRequestDto getDto)
         {
-            if (getDataRequest.Filter is not null)
+            if (getDto.Filter is not null)
                 return Ok(await _conversationsRepository
-                    .GetUserConversationsMatchingFilterAsync(_loggedUserService.Id, getDataRequest.Filter));
+                    .GetUserConversationsMatchingFilterAsync(_loggedUserService.Id, getDto.Filter));
 
             return Ok(await _conversationsRepository
-                .GetUserRecentConversationsAsync(_loggedUserService.Id, getDataRequest.Skip));
+                .GetUserRecentConversationsAsync(_loggedUserService.Id, getDto.Skip));
         }
 
         [HttpGet("{idConversation:int}/messages")]

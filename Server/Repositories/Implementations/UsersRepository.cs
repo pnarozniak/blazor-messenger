@@ -5,7 +5,7 @@ using messanger.Server.Data;
 using messanger.Server.Extensions;
 using messanger.Server.Helpers;
 using messanger.Server.Repositories.Interfaces;
-using messanger.Shared.DTOs;
+using messanger.Shared.DTOs.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace messanger.Server.Repositories.Implementations
@@ -13,6 +13,7 @@ namespace messanger.Server.Repositories.Implementations
     public class UsersRepository : IUsersRepository
     {
         private readonly ApplicationDbContext _context;
+
         public UsersRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -40,6 +41,7 @@ namespace messanger.Server.Repositories.Implementations
                 .Where(u => u.FirstName.StartsWith(firstName) && u.LastName.StartsWith(lastName))
                 .Where(u => u.Id != idUser)
                 .WhereIsNotFriendWith(idUser)
+                .WhereHasNoPrivateConversationWith(idUser)
                 .OrderBy(u => u.FirstName)
                 .ThenBy(u => u.LastName)
                 .Select(u => new UserResponseDto

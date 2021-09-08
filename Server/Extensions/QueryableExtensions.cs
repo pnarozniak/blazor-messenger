@@ -18,6 +18,14 @@ namespace messanger.Server.Extensions
                 .Where(u => u.FriendshipsWhereIsUser1.All(f1 => f1.IdUser2 != idUser)
                             && u.FriendshipsWhereIsUser1.All(f2 => f2.IdUser1 != idUser));
         }
+
+        public static IQueryable<User> WhereHasNoPrivateConversationWith(this IQueryable<User> srcUsersQueryable, string idUser)
+        {
+            return srcUsersQueryable
+                .Where(u => !(u.ConversationsParticipation.Any(cp =>
+                    cp.IdConversationNavigation.IsPrivate &&
+                    cp.IdConversationNavigation.ConversationMembers.Any(cm => cm.IdUser == idUser))));
+        }
     }
 }
 

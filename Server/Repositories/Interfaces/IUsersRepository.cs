@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using messanger.Shared.DTOs;
+using messanger.Shared.DTOs.Responses;
 
 namespace messanger.Server.Repositories.Interfaces
 {

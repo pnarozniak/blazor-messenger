@@ -25,13 +25,10 @@ namespace messanger.Server.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetUsers(
-            [FromQuery] GetDataRequestDto getDataRequest)
+            [FromQuery] GetUsersRequestDto getDto)
         {
-            if (getDataRequest.Filter is null)
-                return BadRequest();
-
             return Ok(await _usersRepository.GetUserStrangersByFilterAsync(
-                _loggedUserService.Id, getDataRequest.Filter));
+                _loggedUserService.Id, getDto.Filter));
         }
     }
 }

@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace messanger.Shared.DTOs.Requests
 {
-    public class GetDataRequestDto
+    public class GetUsersRequestDto
     {
-        [Range(0, int.MaxValue)]
-        public int Skip { get; set; }
-
+        [Required]
         [RegularExpression(".*\\S.*")]
         public string Filter { get; set; }
     }
