@@ -1,6 +1,8 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using messanger.Client.Repositories.Implementations;
+using messanger.Client.Repositories.Interfaces;
 using messanger.Client.Services.Implementations;
 using messanger.Client.Services.Interfaces;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -33,6 +35,9 @@ namespace messanger.Client
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IHttpService, HttpService>();
+            services.AddScoped<IConversationsRepository, ConversationsRepository>();
+            services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
         }
     }
 }
