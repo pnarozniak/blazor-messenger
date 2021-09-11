@@ -38,6 +38,7 @@ namespace messanger.Client
             services.AddScoped<IConversationsRepository, ConversationsRepository>();
             services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddSingleton<IAppStateService, AppStateService>();
         }
     }
 }
