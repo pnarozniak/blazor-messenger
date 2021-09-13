@@ -1,0 +1,29 @@
+﻿.conversation-name {
+    color: #848484;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.description-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: #9e9ea1;
+    font-size: 14px;
+
+    .description-left {
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden !important;
+        text-overflow: ellipsis;
+    }
+
+    .description-right {
+        flex-shrink: 0;
+        display: inline-block;
+        font-weight: bold;
+        margin-right: 8px;
+    }
+}
