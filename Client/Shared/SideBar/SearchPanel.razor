@@ -1,0 +1,22 @@
+﻿<div class="search-input-row">
+    @if (IsSearching)
+    {
+        <div class="search-cancel" @onclick="@(() => ToggleSearching(false))">
+            <i class="oi oi-arrow-left"></i>
+        </div>
+    }
+    <div class="search-input">
+        <i class="oi oi-magnifying-glass"></i>
+        <input placeholder="Searching..."
+               @bind-value="_searchInputValue"
+               @bind-value:event="oninput"
+               @onclick="@(() => ToggleSearching(true))"
+               @onkeyup="@OnKeyUp" />
+    </div>
+</div>
+@if (IsSearching && IsSearchInputValueValid)
+{
+    <div class="search-info">
+        <span>Searching for "@_searchInputValue"</span>
+    </div>
+}
