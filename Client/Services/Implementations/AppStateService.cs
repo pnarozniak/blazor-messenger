@@ -9,7 +9,7 @@ namespace messanger.Client.Services.Implementations
     {
         public List<ConversationResponseDto> Conversations { get; } = new();
 
-        public ConversationResponseDto ActiveConversation { get; private set; }
+        public int? ActiveConversationId { get; private set; }
 
         public event Action OnChange;
 
@@ -19,9 +19,9 @@ namespace messanger.Client.Services.Implementations
             NotifyStateChanged();
         }
 
-        public void SetActiveConversation(ConversationResponseDto newActiveConversation)
+        public void SetActiveConversation(int newActiveConversationId)
         {
-            ActiveConversation = newActiveConversation;
+            ActiveConversationId = newActiveConversationId;
             NotifyStateChanged();
         }
 
