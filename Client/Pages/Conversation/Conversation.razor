@@ -1,0 +1,12 @@
+﻿@page "/conversation/{IdConversation:int}"
+
+@code {
+    [Parameter] public int IdConversation { get; set; }
+
+    [Inject] public IAppStateService AppStateService { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        AppStateService.SetActiveConversation(IdConversation);
+    }
+}
