@@ -1,0 +1,15 @@
+﻿<div class="skeleton-loading-container">
+    @for (var i = 0; i < Count; i++)
+    {
+        <ListItem>
+            <span class="skeleton skeleton-text"></span>
+            <div class="spacing"></div>
+            <span class="skeleton skeleton-text"></span>
+        </ListItem>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Count { get; set; }
+}

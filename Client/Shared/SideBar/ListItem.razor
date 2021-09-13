@@ -1,0 +1,21 @@
+﻿<div class="item @(IsActive ? "item-active" : "")"
+     @onclick="@(() => OnClick.InvokeAsync())">
+    <img class="avatar" src="@ImgSrc" />
+    <div class="body-container">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public bool IsActive { get; set; }
+
+    [Parameter]
+    public string ImgSrc { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

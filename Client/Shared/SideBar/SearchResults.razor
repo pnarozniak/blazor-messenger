@@ -1,0 +1,17 @@
+﻿@if (WrappedResults?.Conversations is not null && WrappedResults.Conversations.Any())
+{
+    <span>Conversations</span>
+    <ConversationsList Conversations="WrappedResults.Conversations" AfterConversationClicked="@CloseResults" />
+}
+
+@if (WrappedResults?.Friends is not null && WrappedResults.Friends.Any())
+{
+    <span>Friends</span>
+    <UsersList Users="WrappedResults.Friends" AfterUserClicked="@CloseResults" />
+}
+
+@if (WrappedResults?.MorePeople is not null && WrappedResults.MorePeople.Any())
+{
+    <span>More people</span>
+    <UsersList Users="WrappedResults.MorePeople" AfterUserClicked="@CloseResults" />
+}

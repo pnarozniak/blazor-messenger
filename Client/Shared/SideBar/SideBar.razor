@@ -1,0 +1,33 @@
+﻿<div class="search-panel-container">
+    <SearchPanel @bind-IsSearching="_isSearching"
+                 @bind-SearchResultsWrapper="_searchResultsWrapper"
+                 @ref="_searchPanelRef" />
+</div>
+<div class="list-container @(_isSearching ? "search-results" : "recent-conversations")" @ref="_listContainerRef">
+    @if (_isSearching)
+    {
+        <SearchResults WrappedResults="_searchResultsWrapper"
+                       StopSearchingCallback="StopSearching" />
+    }
+    else
+    {
+        <UserConversations GetListContainerRef="() => _listContainerRef" />
+    }
+</div>
+
+@code {
+    private bool _isSearching;
+
+    private SearchPanel _searchPanelRef;
+
+    private ElementReference _listContainerRef;
+
+    private SearchResultsWrapper _searchResultsWrapper = new();
+
+    private async Task StopSearching()
+    {
+        _isSearching = false;
+        await _searchPanelRef.ClearSearch();
+    }
+
+}

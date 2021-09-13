@@ -1,0 +1,8 @@
+﻿<ConversationsList Conversations="AppStateService.Conversations"
+                   ActiveConversationId="AppStateService.ActiveConversationId"
+                   @ref="_conversationsListRef" />
+
+@if (_showSkeletonLoading)
+{
+    <SkeletonLoading Count="2" />
+}
