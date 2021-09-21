@@ -1,0 +1,45 @@
+﻿<ListItem OnClick="@OnClick" IsActive="AppStateService.ActiveConversationId == Conversation.IdConversation">
+    <span class="conversation-name">
+        @((Conversation.Name ?? string.Join(", ", Conversation.Members.Select(u => $"{u.FirstName} {u.LastName}"))))
+    </span>
+    <div class="description-container">
+        <div class="description-left">
+            @if (Conversation.LastMessage is not null)
+            {
+                <span>
+                    @((Conversation.LastMessage.DeletedAt is null ? Conversation.LastMessage.Content :
+                        $"{Conversation.LastMessage.Sender.FirstName} {Conversation.LastMessage.Sender.LastName} deleted this message"))
+                </span>
+            }
+            else if (Conversation.Name is not null && Conversation.Members is not null)
+            {
+                <span>@string.Join(", ", Conversation.Members.Select(m => $"{m.FirstName} {m.LastName}"))</span>
+            }
+        </div>
+        <div class="description-right">
+            @if (Conversation.LastMessage is not null)
+            {
+                <span class="px-1"> · </span>
+                <span> @Conversation.LastMessage.CreatedAt.ToAgoString() </span>
+            }
+        </div>
+    </div>
+</ListItem>
+
+@code {
+    [Parameter] public ConversationResponseDto Conversation { get; set; }
+
+    [Parameter] public EventCallback<ConversationResponseDto> AfterConversationClicked { get; set; }
+
+    [Inject] public NavigationManager NavigationManager { get; set; }
+
+    [Inject] public IAppStateService AppStateService { get; set; }
+
+    private async Task OnClick()
+    {
+        NavigationManager.NavigateTo($"/conversation/{Conversation.IdConversation}");
+
+        if (AfterConversationClicked.HasDelegate)
+            await AfterConversationClicked.InvokeAsync();
+    }
+}

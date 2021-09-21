@@ -53,7 +53,6 @@ namespace messanger.Client.Shared.SideBar
 
             if (string.IsNullOrWhiteSpace(_searchInputValue))
             {
-                SearchResultsWrapper = new SearchResultsWrapper();
                 await NotifySearchResultsChanged();
                 return;
             }
@@ -68,7 +67,10 @@ namespace messanger.Client.Shared.SideBar
 
         private async Task FetchSearchResults()
         {
-            SearchResultsWrapper.Conversations = await FetchConversations();
+            SearchResultsWrapper = new SearchResultsWrapper
+            {
+                Conversations = await FetchConversations()
+            };
             await NotifySearchResultsChanged();
 
             SearchResultsWrapper.Friends = await FetchFriends();

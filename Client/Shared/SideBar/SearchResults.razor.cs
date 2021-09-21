@@ -14,10 +14,5 @@ namespace messanger.Client.Shared.SideBar
         [Inject] public NavigationManager NavigationManager { get; set; }
 
         [Inject] public IConversationsRepository ConversationsRepository { get; set; }
-
-        private async Task CloseResults()
-        {
-            await StopSearchingCallback.InvokeAsync();
-        }
     }
 }
