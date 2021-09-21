@@ -8,6 +8,11 @@
     flex: 1;
 }
 
+.content {
+    padding: 8px;
+    height: 100%
+}
+
 .sidebar {
     background-color: #ffffff;
     border-right: 1px solid #e5e5e5;
@@ -24,10 +29,5 @@
         height: 100vh;
         position: sticky;
         top: 0;
-    }
-
-    .main > div {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
     }
 }

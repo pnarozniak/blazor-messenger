@@ -1,8 +1,12 @@
-﻿<ConversationsList Conversations="AppStateService.Conversations"
-                   ActiveConversationId="AppStateService.ActiveConversationId"
-                   @ref="_conversationsListRef" />
-
-@if (_showSkeletonLoading)
-{
-    <SkeletonLoading Count="2" />
-}
+﻿<InfiniteScroll Items="AppStateService.Conversations"
+                Context="conversation"
+                LoadNextItems="@FetchConversationsAsync"
+                ItemSize="72f"
+                GetScrollContainerRef="@(() => GetListContainerRef.Invoke())">
+    <ItemTemplate>
+        <ConversationListItem Conversation="conversation" @key="conversation.IdConversation" />
+    </ItemTemplate>
+    <LoadingTemplate>
+        <SkeletonLoading Count="2" />
+    </LoadingTemplate>
+</InfiniteScroll>

@@ -1,0 +1,28 @@
+﻿@using messanger.Client.Repositories.Interfaces
+<ListItem OnClick="@OnClick">
+    <span class="user-info">@User.FirstName @User.LastName</span>
+</ListItem>
+
+@code {
+    [Parameter]
+    public UserResponseDto User { get; set; }
+
+    [Parameter] public EventCallback<UserResponseDto> AfterUserClicked { get; set; }
+
+    [Inject] public NavigationManager NavigationManager { get; set; }
+
+    [Inject] public IConversationsRepository ConversationsRepository { get; set; }
+
+    private async Task OnClick()
+    {
+        var idConversation = await ConversationsRepository
+            .GetPrivateConversationIdWithUserAsync(User.IdUser);
+
+        NavigationManager.NavigateTo(idConversation is null
+            ? $"conversation/new/{User.IdUser}"
+            : $"conversation/{idConversation}");
+
+        if (AfterUserClicked.HasDelegate)
+            await AfterUserClicked.InvokeAsync();
+    }
+}
