@@ -21,12 +21,12 @@ namespace messanger.Server.Repositories.Implementations
         public async Task<IEnumerable<ConversationResponseDto>> GetUserRecentConversationsAsync
             (string idUser, int skip)
         {
-            const int takeConversations = 2;
+            const int takeConversations = 5;
             const int takeConversationMembers = 5;
 
             return await _context.Conversations
                 .Where(c => c.ConversationMembers.Any(cm => cm.IdUser == idUser))
-                .OrderByDescending(c => c.Messages.OrderBy(m => m.CreatedAt).FirstOrDefault().CreatedAt)
+                .OrderByDescending(c => c.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefault().CreatedAt)
                 .Select(c => new ConversationResponseDto
                 {
                     IdConversation = c.IdConversation,
@@ -62,7 +62,7 @@ namespace messanger.Server.Repositories.Implementations
         public async Task<IEnumerable<ConversationResponseDto>> GetUserConversationsMatchingFilterAsync
             (string idUser, string filter)
         {
-            const int takeConversations = 10;
+            const int takeConversations = 8;
             const int takeConversationMembers = 5;
 
             var firstName = FilterHelper.GetFirstPart(filter);
@@ -103,12 +103,15 @@ namespace messanger.Server.Repositories.Implementations
         public async Task<IEnumerable<MessageResponseDto>> GetUserConversationMessagesAsync
             (int idConversation, string idUser, int skip)
         {
+            const int takeMessages = 20;
+
             return await _context.Messages
                 .Where(m => m.IdConversation == idConversation
                             && m.IdConversationNavigation.ConversationMembers
                                 .Any(cm => cm.IdUserNavigation.Id == idUser))
                 .OrderBy(m => m.CreatedAt)
                 .Skip(skip)
+                .Take(takeMessages)
                 .Select(m => new MessageResponseDto
                 {
                     IdMessage = m.IdMessage,
