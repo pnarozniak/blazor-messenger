@@ -12,6 +12,7 @@ namespace messanger.Client.Shared.SideBar
     public partial class UserConversations : IDisposable
     {
         private Timer _timer;
+
         [Parameter] public Func<ElementReference> GetListContainerRef { get; set; }
 
         [Inject] public IAppStateService AppStateService { get; set; }
@@ -27,7 +28,7 @@ namespace messanger.Client.Shared.SideBar
         private void RunRefreshTimer()
         {
             _timer = new Timer(60000);
-            _timer.Elapsed += (_, _) => Console.WriteLine("TIMER");
+            _timer.Elapsed += (_, _) => StateHasChanged();
             _timer.AutoReset = true;
             _timer.Enabled = true;
         }
