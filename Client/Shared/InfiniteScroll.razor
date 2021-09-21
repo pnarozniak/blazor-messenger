@@ -1,0 +1,37 @@
+﻿@typeparam TItem
+
+@if (ScrollReverse)
+{
+    @if (_hasAll)
+    {
+        @HasAllTemplate
+    }
+    else
+    {
+        <div @ref="_lastItemRef">
+            @LoadingTemplate
+        </div>
+    }
+
+}
+
+<Virtualize Items="Items" Context="item" ItemSize="@ItemSize">
+    <ItemContent>
+        @ItemTemplate(item)
+    </ItemContent>
+</Virtualize>
+
+@if (!ScrollReverse)
+{
+    @if (_hasAll)
+    {
+        @HasAllTemplate
+    }
+    else
+    {
+        <div @ref="_lastItemRef">
+            @LoadingTemplate
+        </div>
+    }
+
+}
