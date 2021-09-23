@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using messanger.Client.Models;
@@ -29,6 +30,14 @@ namespace messanger.Client.Services.Implementations
 
             var response = await Deserialize<T>(responseHttp, DefaultJsonSerializerOptions);
             return new HttpResponseWrapper<T>(response, true, responseHttp);
+        }
+
+        public async Task<HttpResponseWrapper<object>> PostAsync<T>(string url, T data)
+        {
+            var dataJson = JsonSerializer.Serialize(data);
+            var stringContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(url, stringContent);
+            return new HttpResponseWrapper<object>(null, response.IsSuccessStatusCode, response);
         }
 
         private static async Task<T> Deserialize<T>(HttpResponseMessage httpResponse, JsonSerializerOptions options)

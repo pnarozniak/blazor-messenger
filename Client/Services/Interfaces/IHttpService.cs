@@ -5,6 +5,7 @@ namespace messanger.Client.Services.Interfaces
 {
     public interface IHttpService
     {
-        Task<HttpResponseWrapper<T>> GetAsync<T>(string url, QueryParams queryParams = null);
+        public Task<HttpResponseWrapper<T>> GetAsync<T>(string url, QueryParams queryParams = null);
+        public Task<HttpResponseWrapper<object>> PostAsync<T>(string url, T data);
     }
 }
