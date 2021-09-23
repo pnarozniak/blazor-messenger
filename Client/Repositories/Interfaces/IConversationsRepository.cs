@@ -11,5 +11,10 @@ namespace messanger.Client.Repositories.Interfaces
             GetConversationsRequestDto getDto = default);
 
         public Task<int?> GetPrivateConversationIdWithUserAsync(string idUser);
+
+        public Task<IEnumerable<MessageResponseDto>> GetConversationMessagesAsync(
+            int idConversation, int skip = default);
+
+        public Task<GetConversationBasicInfoResponseDto> GetBasicConversationInfoAsync(int idConversation);
     }
 }
