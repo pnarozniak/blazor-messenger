@@ -35,6 +35,19 @@ namespace messanger.Server.Controllers
                 .GetUserRecentConversationsAsync(_loggedUserService.Id, getDto.Skip));
         }
 
+        [HttpGet("{idConversation:int}")]
+        public async Task<IActionResult> GetConversationBasicInfo(
+            [FromRoute] int idConversation)
+        {
+            var basicInfo = await _conversationsRepository.GetUserConversationBasicInfoAsync(
+                idConversation, _loggedUserService.Id);
+
+            if (basicInfo is null)
+                return BadRequest();
+
+            return Ok(basicInfo);
+        }
+
         [HttpGet("{idConversation:int}/messages")]
         public async Task<IActionResult> GetConversationMessages(
             [FromRoute] int idConversation, [FromQuery] int skip)

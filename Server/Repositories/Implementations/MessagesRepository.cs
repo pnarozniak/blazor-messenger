@@ -34,7 +34,7 @@ namespace messanger.Server.Repositories.Implementations
             var message = new Message
             {
                 Content = newMessage.Content,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 IdConversationNavigation = conversation,
                 IdSender = idSender
             };
@@ -72,7 +72,7 @@ namespace messanger.Server.Repositories.Implementations
             if (message.DeletedAt is not null)
                 return null;
 
-            message.DeletedAt = DateTime.Now;
+            message.DeletedAt = DateTime.UtcNow;
 
             return await _context.SaveChangesAsync() > 0 ? message : null;
         }
