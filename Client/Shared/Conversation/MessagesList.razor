@@ -1,0 +1,40 @@
+﻿<div class="list" @ref="_listRef">
+    <InfiniteScroll Items="_messages"
+                    Context="message"
+                    LoadNextItems="@FetchMessages"
+                    GetScrollContainerRef="@(() => _listRef)"
+                    ScrollReverse="true"
+                    @ref="_infiniteScrollRef">
+        <ItemTemplate>
+            <div>
+                @if (!message.IsSender && message.IsRoot)
+                {
+                    <span class="user-name">@message.Message.Sender.FirstName @message.Message.Sender.LastName</span>
+                }
+                <div class="message @((message.IsSender ? "sent-message" : "received-message"))">
+                    <div class="helper-div"></div>
+                    <div class="avatar-container">
+                        @if (!message.IsSender && message.IsRoot)
+                        {
+                            <img class="mess-avatar" src="@string.Empty" />
+                        }
+                    </div>
+                    <div class="message-box">
+                        <span>@message.Message.Content</span>
+                    </div>
+                </div>
+            </div>
+        </ItemTemplate>
+        <LoadingTemplate>
+            <Loader />
+        </LoadingTemplate>
+        <HasAllTemplate>
+            <div class="has-all-messages-container">
+                <div class="avatar-container">
+                    <img class="mess-avatar" src="@ConversationAvatar" />
+                </div>
+                <span>@ConversationName</span>
+            </div>
+        </HasAllTemplate>
+    </InfiniteScroll>
+</div>
