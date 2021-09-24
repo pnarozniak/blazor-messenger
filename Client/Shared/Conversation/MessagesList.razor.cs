@@ -54,19 +54,19 @@ namespace messanger.Client.Shared.Conversation
             return messages.Any();
         }
 
-        private void PrepareForDisplay(List<MessageResponseDto> messages)
+        private void PrepareForDisplay(List<MessageResponseDto> newMessages)
         {
             MessageResponseDto prevMessage = null;
-            foreach (var message in messages)
+            foreach (var newMessage in newMessages.Where(newMessage => _messages.All(m => m.Message.IdMessage != newMessage.IdMessage)))
             {
                 _messages.Add(new MessageWrapper()
                 {
-                    Message = message,
-                    IsSender = message.Sender.IdUser == _loggedUserId,
-                    IsRoot = message.Sender.IdUser != prevMessage?.Sender?.IdUser
+                    Message = newMessage,
+                    IsSender = newMessage.Sender.IdUser == _loggedUserId,
+                    IsRoot = newMessage.Sender.IdUser != prevMessage?.Sender?.IdUser
                 });
 
-                prevMessage = message;
+                prevMessage = newMessage;
             }
         }
     }
