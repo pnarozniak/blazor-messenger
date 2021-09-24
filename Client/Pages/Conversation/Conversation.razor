@@ -1,12 +1,15 @@
 ﻿@page "/conversation/{IdConversation:int}"
+@using messanger.Client.Shared.Conversation
 
-@code {
-    [Parameter] public int IdConversation { get; set; }
-
-    [Inject] public IAppStateService AppStateService { get; set; }
-
-    protected override void OnParametersSet()
-    {
-        AppStateService.SetActiveConversation(IdConversation);
-    }
-}
+<ConversationInfoRow Name="@_basicConversationInfo?.Name"
+                     Avatar="@string.Empty">
+    <RightExtraContent>
+        @*TODO*@
+    </RightExtraContent>
+</ConversationInfoRow>
+<MessagesList IdConversation="IdConversation"
+              ConversationName="@_basicConversationInfo?.Name"
+              ConversationAvatar="@string.Empty" />
+<UserActions OnSend="@SendMessage">
+    @*TODO*@
+</UserActions>

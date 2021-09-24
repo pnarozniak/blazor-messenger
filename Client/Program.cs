@@ -8,6 +8,7 @@ using messanger.Client.Services.Interfaces;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace messanger.Client
 {
@@ -27,7 +28,7 @@ namespace messanger.Client
                 sp.GetRequiredService<IHttpClientFactory>().CreateClient("messanger.ServerAPI"));
 
             builder.Services.AddApiAuthorization();
-
+            builder.Logging.SetMinimumLevel(LogLevel.None);
             ConfigureServices(builder.Services);
             await builder.Build().RunAsync();
         }
@@ -39,6 +40,7 @@ namespace messanger.Client
             services.AddScoped<IFriendshipsRepository, FriendshipsRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddSingleton<IAppStateService, AppStateService>();
+            services.AddScoped<IMessagesRepository, MessagesRepository>();
         }
     }
 }

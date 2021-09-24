@@ -1,6 +1,8 @@
 ﻿<div class="item @(IsActive ? "item-active" : "")"
      @onclick="@(() => OnClick.InvokeAsync())">
-    <img class="avatar" src="@ImgSrc" />
+    <div class="avatar-container">
+        <img class="mess-avatar" src="@ImgSrc" />
+    </div>
     <div class="body-container">
         @ChildContent
     </div>
@@ -11,7 +13,7 @@
     public bool IsActive { get; set; }
 
     [Parameter]
-    public string ImgSrc { get; set; }
+    public string ImgSrc { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback OnClick { get; set; }

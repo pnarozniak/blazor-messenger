@@ -40,5 +40,23 @@ namespace messanger.Client.Repositories.Implementations
 
             return response.HttpResponseMessage.StatusCode == HttpStatusCode.OK ? response.Response : null;
         }
+
+        public async Task<IEnumerable<MessageResponseDto>> GetConversationMessagesAsync(int idConversation,
+            int skip = default)
+        {
+            var queryParams = new QueryParams();
+            queryParams.Add(nameof(skip), skip);
+
+            var response = await _httpService.GetAsync<IEnumerable<MessageResponseDto>>
+                ($"{ApiBaseUrl}/{idConversation}/messages", queryParams);
+            return response.Response;
+        }
+
+        public async Task<GetConversationBasicInfoResponseDto> GetBasicConversationInfoAsync(int idConversation)
+        {
+            var response = await _httpService.GetAsync<GetConversationBasicInfoResponseDto>
+                ($"{ApiBaseUrl}/{idConversation}");
+            return response.Success ? response.Response : null;
+        }
     }
 }

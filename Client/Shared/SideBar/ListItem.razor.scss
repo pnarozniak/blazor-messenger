@@ -12,12 +12,10 @@
         background-color: $item-active-bg;
     }
 
-    .avatar {
-        border-radius: 50%;
+    .avatar-container {
         width: 48px;
         min-width: 48px;
         height: 48px;
-        border: 1px solid #848484;
         margin-right: 8px;
     }
 
