@@ -47,7 +47,8 @@ namespace messanger.Client.Shared
             {
                 scrollContainer = GetScrollContainerRef(),
                 lastItem = _lastItemRef,
-                componentInstance = DotNetObjectReference.Create(this)
+                componentInstance = DotNetObjectReference.Create(this),
+                scrollReverse = ScrollReverse
             });
         }
 
@@ -61,7 +62,6 @@ namespace messanger.Client.Shared
             StateHasChanged();
 
             _hasAll = !await LoadNextItems.Invoke();
-
             _loading = false;
             StateHasChanged();
         }
@@ -82,16 +82,17 @@ namespace messanger.Client.Shared
 
         public async ValueTask DisposeAsync()
         {
-            if (_module is not null)
-            {
-                await _module.DisposeAsync();
-            }
-
             if (_instance is not null)
             {
                 await _instance.InvokeVoidAsync("dispose");
                 await _instance.DisposeAsync();
             }
+
+            if (_module is not null)
+            {
+                await _module.DisposeAsync();
+            }
+
         }
     }
 }
