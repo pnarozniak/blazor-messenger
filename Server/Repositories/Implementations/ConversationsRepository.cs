@@ -145,5 +145,20 @@ namespace messanger.Server.Repositories.Implementations
                 .Select(c => (int?)c.IdConversation)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<GetConversationBasicInfoResponseDto> GetUserConversationBasicInfoAsync
+            (int idConversation, string idUser)
+        {
+            return await _context.Conversations
+                .Where(c => c.IdConversation == idConversation)
+                .Where(c => c.ConversationMembers.Any(cm => cm.IdUser == idUser))
+                .Include(c => c.ConversationMembers)
+                .ThenInclude(cm => cm.IdUserNavigation)
+                .Select(c => new GetConversationBasicInfoResponseDto()
+                {
+                    Name = c.ConstructNameForUser(idUser),
+                })
+                .FirstOrDefaultAsync();
+        }
     }
 }
