@@ -10,7 +10,9 @@
 
 .content {
     padding: 8px;
-    height: 100%
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar {
