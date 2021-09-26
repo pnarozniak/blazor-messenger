@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
+using messanger.Server.Hubs;
 using messanger.Server.Repositories.Interfaces;
 using messanger.Server.Services.Interfaces;
 using messanger.Shared.DTOs.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace messanger.Server.Controllers
 {
@@ -14,13 +16,19 @@ namespace messanger.Server.Controllers
     {
         private readonly IConversationsRepository _conversationsRepository;
         private readonly ILoggedUserService _loggedUserService;
+        private readonly IMessagesRepository _messagesRepository;
+        private readonly IHubContext<NotificationsHub, INotificationsHub> _notificationsHubContext;
 
         public ConversationsController(
             ILoggedUserService loggedUserService,
-            IConversationsRepository conversationsRepository)
+            IConversationsRepository conversationsRepository,
+            IMessagesRepository messagesRepository,
+            IHubContext<NotificationsHub, INotificationsHub> notificationsHubContext)
         {
             _loggedUserService = loggedUserService;
             _conversationsRepository = conversationsRepository;
+            _messagesRepository = messagesRepository;
+            _notificationsHubContext = notificationsHubContext;
         }
 
         [HttpGet]
@@ -69,6 +77,25 @@ namespace messanger.Server.Controllers
                 _loggedUserService.Id, idUser);
 
             return idConversation is null ? NoContent() : Ok(idConversation);
+        }
+
+        [HttpPost("{idConversation:int}/messages")]
+        public async Task<IActionResult> CreateMessageInConversation(
+            [FromRoute] int idConversation, [FromBody] NewMessageRequestDto newMessage)
+        {
+            var addedMessage = await _messagesRepository
+                .AddNewMessageAsync(_loggedUserService.Id, idConversation, newMessage);
+
+            if (addedMessage is null)
+                return BadRequest();
+
+            var conversationMembersIds = await _conversationsRepository
+                .GetConversationMembersIdsAsync(idConversation);
+
+            await _notificationsHubContext.Clients.Users(conversationMembersIds)
+                .NewMessage(idConversation, addedMessage);
+
+            return NoContent();
         }
     }
 }

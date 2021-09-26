@@ -7,7 +7,7 @@ namespace messanger.Server.Repositories.Interfaces
 {
     public interface IMessagesRepository
     {
-        public Task<MessageResponseDto> AddNewMessageAsync(string idSender, NewMessageRequestDto newMessage);
+        public Task<MessageResponseDto> AddNewMessageAsync(string idSender, int idConversation, NewMessageRequestDto newMessage);
         public Task<Message> DeleteMessageAsync(int idMessage, string idSender);
     }
 }

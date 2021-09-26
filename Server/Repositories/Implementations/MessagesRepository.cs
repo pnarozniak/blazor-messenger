@@ -21,11 +21,11 @@ namespace messanger.Server.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<MessageResponseDto> AddNewMessageAsync(string idSender, NewMessageRequestDto newMessage)
+        public async Task<MessageResponseDto> AddNewMessageAsync(string idSender, int idConversation, NewMessageRequestDto newMessage)
         {
             var conversation = await _context.Conversations
                 .SingleOrDefaultAsync
-                (c => c.IdConversation == newMessage.IdConversation &&
+                (c => c.IdConversation == idConversation &&
                       c.ConversationMembers.Any(cm => cm.IdUserNavigation.Id == idSender));
 
             if (conversation is null)

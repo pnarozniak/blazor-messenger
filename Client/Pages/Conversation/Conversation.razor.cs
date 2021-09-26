@@ -15,8 +15,6 @@ namespace messanger.Client.Pages.Conversation
 
         [Inject] public IAppStateService AppStateService { get; set; }
 
-        [Inject] public IMessagesRepository MessagesRepository { get; set; }
-
         [Inject] public IConversationsRepository ConversationsRepository { get; set; }
 
         [Inject] public NavigationManager NavigationManager { get; set; }
@@ -35,9 +33,8 @@ namespace messanger.Client.Pages.Conversation
 
         private async Task SendMessage(string message)
         {
-            await MessagesRepository.CreateMessageAsync(new NewMessageRequestDto()
+            await ConversationsRepository.SendMessageInConversationAsync(IdConversation, new NewMessageRequestDto()
             {
-                IdConversation = IdConversation,
                 Content = message
             });
         }
