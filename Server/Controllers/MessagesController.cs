@@ -31,25 +31,6 @@ namespace messanger.Server.Controllers
             _notificationsHubContext = notificationsHubContext;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateMessage(
-            [FromBody] NewMessageRequestDto newMessage)
-        {
-            var addedMessage = await _messagesRepository.AddNewMessageAsync
-                (_loggedUserService.Id, newMessage);
-
-            if (addedMessage is null)
-                return NotFound();
-
-            var conversationMembersIds = await _conversationsRepository
-                .GetConversationMembersIdsAsync((int)newMessage.IdConversation);
-
-            await _notificationsHubContext.Clients.Users(conversationMembersIds)
-                .NewMessage((int)newMessage.IdConversation, addedMessage);
-
-            return NoContent();
-        }
-
         [HttpDelete("{idMessage:int}")]
         public async Task<IActionResult> DeleteMessage(
             [FromRoute] int idMessage)

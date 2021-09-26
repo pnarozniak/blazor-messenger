@@ -16,5 +16,7 @@ namespace messanger.Client.Repositories.Interfaces
             int idConversation, int skip = default);
 
         public Task<GetConversationBasicInfoResponseDto> GetBasicConversationInfoAsync(int idConversation);
+
+        public Task<bool> SendMessageInConversationAsync(int idConversation, NewMessageRequestDto newMessageRequest);
     }
 }
