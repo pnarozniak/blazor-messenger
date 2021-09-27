@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using messanger.Server.Data;
 using messanger.Server.Helpers;
+using messanger.Server.Models;
 using messanger.Server.Repositories.Interfaces;
+using messanger.Shared.DTOs.Requests;
 using messanger.Shared.DTOs.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,10 +16,14 @@ namespace messanger.Server.Repositories.Implementations
     public class ConversationsRepository : IConversationsRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMessagesRepository _messagesRepository;
 
-        public ConversationsRepository(ApplicationDbContext context)
+        public ConversationsRepository(
+            ApplicationDbContext context,
+            IMessagesRepository messagesRepository)
         {
             _context = context;
+            _messagesRepository = messagesRepository;
         }
 
         public async Task<IEnumerable<ConversationResponseDto>> GetUserRecentConversationsAsync
@@ -159,6 +167,124 @@ namespace messanger.Server.Repositories.Implementations
                     Name = c.ConstructNameForUser(idUser),
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<(int idConversation, MessageResponseDto message)?> CreatePrivateConversationAsync
+            (string idCreator, string idReceiver, NewMessageRequestDto initialMessage)
+        {
+            if (await GetPrivateConversationIdBetweenUsersAsync(idCreator, idReceiver) is not null)
+                return null;
+
+            var currentTimeStamp = DateTime.UtcNow;
+
+            await using var tran = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var newConversation = new Conversation()
+                {
+                    ConversationMembers = new List<ConversationMember>()
+                    {
+                        new()
+                        {
+                            IdUser = idCreator,
+                            CreatedAt = currentTimeStamp
+                        },
+                        new()
+                        {
+                            IdUser = idReceiver,
+                            CreatedAt = currentTimeStamp
+                        }
+                    },
+                    IsPrivate = true,
+                };
+
+                await _context.Conversations.AddAsync(newConversation);
+                var isAdded = await _context.SaveChangesAsync() > 0;
+                if (!isAdded)
+                    return null;
+
+                var addedInitialMessage = await _messagesRepository
+                    .AddNewMessageAsync(idCreator, newConversation.IdConversation, initialMessage);
+
+                if (addedInitialMessage is null)
+                {
+                    await tran.RollbackAsync();
+                    return null;
+                }
+
+                var hasConcurrencyInsertOccurred = await _context.Conversations
+                    .AnyAsync(c => c.IsPrivate &&
+                                   c.IdConversation != newConversation.IdConversation &&
+                                   c.ConversationMembers.All(cm => cm.IdUser == idCreator || cm.IdUser == idReceiver));
+
+                if (hasConcurrencyInsertOccurred)
+                {
+                    await tran.RollbackAsync();
+                    return null;
+                }
+
+                await tran.CommitAsync();
+                return (newConversation.IdConversation, addedInitialMessage);
+            }
+            catch (Exception)
+            {
+                await tran.RollbackAsync();
+                return null;
+            }
+
+        }
+
+        public async Task<(int idConversation, MessageResponseDto message)?> CreateGroupConversationAsync
+            (string idCreator, IEnumerable<string> participantsIds, NewMessageRequestDto initialMessage)
+        {
+            var currentTimeStamp = DateTime.UtcNow;
+
+            await using var tran = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var newConversation = new Conversation()
+                {
+                    ConversationMembers = new List<ConversationMember>()
+                    {
+                        new()
+                        {
+                            IdUser = idCreator,
+                            CreatedAt = currentTimeStamp
+                        }
+                    },
+                };
+
+                foreach (var participantId in participantsIds)
+                {
+                    newConversation.ConversationMembers.Add(new ConversationMember()
+                    {
+                        IdUser = participantId,
+                        CreatedAt = currentTimeStamp
+                    });
+                }
+
+                await _context.Conversations.AddAsync(newConversation);
+                var isAdded = await _context.SaveChangesAsync() > 0;
+                if (!isAdded)
+                    return null;
+
+                var addedInitialMessage = await _messagesRepository.AddNewMessageAsync(
+                    idCreator, newConversation.IdConversation, initialMessage);
+
+                if (addedInitialMessage is null)
+                {
+                    await tran.RollbackAsync();
+                    return null;
+                }
+
+                await tran.CommitAsync();
+                return (newConversation.IdConversation, addedInitialMessage);
+            }
+            catch (Exception)
+            {
+                await tran.RollbackAsync();
+                return null;
+            }
         }
     }
 }

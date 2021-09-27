@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using messanger.Server.Hubs;
 using messanger.Server.Repositories.Interfaces;
 using messanger.Server.Services.Interfaces;
 using messanger.Shared.DTOs.Requests;
+using messanger.Shared.DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -43,6 +46,34 @@ namespace messanger.Server.Controllers
                 .GetUserRecentConversationsAsync(_loggedUserService.Id, getDto.Skip));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateNewConversationWithInitialMessage(
+                [FromBody] NewConversationRequestDto newConversation)
+        {
+            (int idConversation, MessageResponseDto message)? createConversationResponse;
+            if (newConversation.ParticipantsIds.Count() == 1)
+            {
+                createConversationResponse = await _conversationsRepository.CreatePrivateConversationAsync(
+                    _loggedUserService.Id, newConversation.ParticipantsIds.First(),
+                    newConversation.InitialMessage);
+            }
+            else
+            {
+                createConversationResponse = await _conversationsRepository.CreateGroupConversationAsync(
+                    _loggedUserService.Id, newConversation.ParticipantsIds,
+                    newConversation.InitialMessage);
+            }
+
+            if (createConversationResponse is null)
+                return Conflict();
+
+            await _notificationsHubContext.Clients
+                .Users(newConversation.ParticipantsIds.Append(_loggedUserService.Id))
+                .NewMessage(createConversationResponse.Value.idConversation, createConversationResponse.Value.message);
+
+            return NoContent();
+        }
+
         [HttpGet("{idConversation:int}")]
         public async Task<IActionResult> GetConversationBasicInfo(
             [FromRoute] int idConversation)
@@ -69,16 +100,6 @@ namespace messanger.Server.Controllers
             return Ok(messages);
         }
 
-        [HttpGet("users/{idUser}")]
-        public async Task<IActionResult> GetPrivateConversationIdWithUser(
-            [FromRoute] string idUser)
-        {
-            var idConversation = await _conversationsRepository.GetPrivateConversationIdBetweenUsersAsync(
-                _loggedUserService.Id, idUser);
-
-            return idConversation is null ? NoContent() : Ok(idConversation);
-        }
-
         [HttpPost("{idConversation:int}/messages")]
         public async Task<IActionResult> CreateMessageInConversation(
             [FromRoute] int idConversation, [FromBody] NewMessageRequestDto newMessage)
@@ -96,6 +117,16 @@ namespace messanger.Server.Controllers
                 .NewMessage(idConversation, addedMessage);
 
             return NoContent();
+        }
+
+        [HttpGet("users/{idUser}")]
+        public async Task<IActionResult> GetPrivateConversationIdWithUser(
+            [FromRoute] string idUser)
+        {
+            var idConversation = await _conversationsRepository.GetPrivateConversationIdBetweenUsersAsync(
+                _loggedUserService.Id, idUser);
+
+            return idConversation is null ? NoContent() : Ok(idConversation);
         }
     }
 }

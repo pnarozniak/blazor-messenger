@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using messanger.Shared.DTOs.Requests;
 using messanger.Shared.DTOs.Responses;
 
 namespace messanger.Server.Repositories.Interfaces
@@ -23,5 +25,11 @@ namespace messanger.Server.Repositories.Interfaces
 
         public Task<GetConversationBasicInfoResponseDto> GetUserConversationBasicInfoAsync
             (int idConversation, string idUser);
+
+        public Task<(int idConversation, MessageResponseDto message)?> CreatePrivateConversationAsync
+            (string idCreator, string idReceiver, NewMessageRequestDto initialMessage);
+
+        public Task<(int idConversation, MessageResponseDto message)?> CreateGroupConversationAsync
+            (string idCreator, IEnumerable<string> participantsIds, NewMessageRequestDto initialMessage);
     }
 }
