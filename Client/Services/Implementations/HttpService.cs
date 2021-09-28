@@ -40,6 +40,19 @@ namespace messanger.Client.Services.Implementations
             return new HttpResponseWrapper<object>(null, response.IsSuccessStatusCode, response);
         }
 
+        public async Task<HttpResponseWrapper<TR>> PostWithJsonResponseAsync<T, TR>(string url, T data)
+        {
+            var dataJson = JsonSerializer.Serialize(data);
+            var stringContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+            var responseHttp = await _httpClient.PostAsync(url, stringContent);
+
+            if (!responseHttp.IsSuccessStatusCode)
+                return new HttpResponseWrapper<TR>(default, false, responseHttp);
+
+            var response = await Deserialize<TR>(responseHttp, DefaultJsonSerializerOptions);
+            return new HttpResponseWrapper<TR>(response, false, responseHttp);
+        }
+
         private static async Task<T> Deserialize<T>(HttpResponseMessage httpResponse, JsonSerializerOptions options)
         {
             var responseString = await httpResponse.Content.ReadAsStringAsync();
