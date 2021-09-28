@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using messanger.Client.Services.Interfaces;
 using messanger.Shared.DTOs.Responses;
 
@@ -15,7 +16,21 @@ namespace messanger.Client.Services.Implementations
 
         public void AddConversations(List<ConversationResponseDto> newConversations)
         {
-            Conversations.AddRange(newConversations);
+            var selectedConversations = newConversations
+                .Where(newConversation =>
+                    Conversations.All(c => c.IdConversation != newConversation.IdConversation))
+                .ToList();
+
+            if (!selectedConversations.Any())
+                return;
+
+            Conversations.AddRange(selectedConversations);
+            NotifyStateChanged();
+        }
+
+        public void AddConversationAt0(ConversationResponseDto newConversation)
+        {
+            Conversations.Insert(0, newConversation);
             NotifyStateChanged();
         }
 
