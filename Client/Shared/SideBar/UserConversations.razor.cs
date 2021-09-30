@@ -45,13 +45,7 @@ namespace messanger.Client.Shared.SideBar
                 return false;
             }
 
-            AppStateService.AddConversations(
-                newConversations
-                    .Where(newConversation =>
-                        AppStateService.Conversations.All(c => c.IdConversation != newConversation.IdConversation))
-                    .ToList()
-            );
-
+            AppStateService.AddConversations(newConversations);
             return true;
         }
 

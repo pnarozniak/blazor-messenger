@@ -71,7 +71,7 @@ namespace messanger.Server.Controllers
                 .Users(newConversation.ParticipantsIds.Append(_loggedUserService.Id))
                 .NewMessage(createConversationResponse.Value.idConversation, createConversationResponse.Value.message);
 
-            return NoContent();
+            return Ok(createConversationResponse.Value.idConversation);
         }
 
         [HttpGet("{idConversation:int}")]

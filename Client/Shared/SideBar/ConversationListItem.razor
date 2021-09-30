@@ -7,8 +7,16 @@
             @if (Conversation.LastMessage is not null)
             {
                 <span>
-                    @((Conversation.LastMessage.DeletedAt is null ? Conversation.LastMessage.Content :
-                        $"{Conversation.LastMessage.Sender.FirstName} {Conversation.LastMessage.Sender.LastName} deleted this message"))
+                    @if (Conversation.LastMessage.DeletedAt is not null)
+                    {
+                        @:@($"{Conversation.LastMessage.Sender.FirstName} {Conversation.LastMessage.Sender.LastName} deleted this message");
+                    }
+                    else
+                    {
+                        @string.Format("{0}: {1}",
+                            Conversation.LastMessage.Sender is not null ? Conversation.LastMessage.Sender.FirstName : "You",
+                            Conversation.LastMessage.Content)
+                    }
                 </span>
             }
             else if (Conversation.Name is not null && Conversation.Members is not null)

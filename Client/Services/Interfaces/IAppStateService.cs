@@ -13,6 +13,7 @@ namespace messanger.Client.Services.Interfaces
         public event Action OnChange;
 
         public void AddConversations(List<ConversationResponseDto> newConversations);
+        public void AddConversationAt0(ConversationResponseDto newConversation);
         public void SetActiveConversation(int newActiveConversationId);
     }
 }

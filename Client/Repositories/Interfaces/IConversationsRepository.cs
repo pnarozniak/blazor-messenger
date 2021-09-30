@@ -18,5 +18,7 @@ namespace messanger.Client.Repositories.Interfaces
         public Task<GetConversationBasicInfoResponseDto> GetBasicConversationInfoAsync(int idConversation);
 
         public Task<bool> SendMessageInConversationAsync(int idConversation, NewMessageRequestDto newMessageRequest);
+
+        public Task<int?> CreateConversationAsync(NewConversationRequestDto newConversationRequest);
     }
 }

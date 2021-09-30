@@ -1,4 +1,5 @@
 ﻿@using messanger.Client.Repositories.Interfaces
+@using Blazored.SessionStorage
 <ListItem OnClick="@OnClick">
     <span class="user-info">@User.FirstName @User.LastName</span>
 </ListItem>
@@ -13,14 +14,26 @@
 
     [Inject] public IConversationsRepository ConversationsRepository { get; set; }
 
+    [Inject] public ISessionStorageService SessionStorageService { get; set; }
+
     private async Task OnClick()
     {
         var idConversation = await ConversationsRepository
             .GetPrivateConversationIdWithUserAsync(User.IdUser);
 
-        NavigationManager.NavigateTo(idConversation is null
-            ? $"conversation/new/{User.IdUser}"
-            : $"conversation/{idConversation}");
+        if (idConversation is null)
+        {
+            await SessionStorageService.SetItemAsync("NewPrivateConversationParameters", new NewPrivateConversationParameters()
+            {
+                IdUser = User.IdUser,
+                ConversationName = $"{User.FirstName} {User.LastName}"
+            });
+            NavigationManager.NavigateTo($"conversation/new/private");
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"conversation/{idConversation}");
+        }
 
         if (AfterUserClicked.HasDelegate)
             await AfterUserClicked.InvokeAsync();

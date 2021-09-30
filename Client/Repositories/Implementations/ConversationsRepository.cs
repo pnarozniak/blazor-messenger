@@ -64,5 +64,12 @@ namespace messanger.Client.Repositories.Implementations
             var response = await _httpService.PostAsync($"{ApiBaseUrl}/{idConversation}/messages", newMessageRequest);
             return response.Success;
         }
+
+        public async Task<int?> CreateConversationAsync(NewConversationRequestDto newConversationRequest)
+        {
+            var response = await _httpService.PostWithJsonResponseAsync<NewConversationRequestDto, int?>
+                ($"{ApiBaseUrl}", newConversationRequest);
+            return response.Response;
+        }
     }
 }
