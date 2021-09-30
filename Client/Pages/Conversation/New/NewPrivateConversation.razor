@@ -1,0 +1,8 @@
+@page "/conversation/new/private"
+@using messanger.Client.Shared.Conversation
+
+<ConversationInfoRow Name="@_parameters.ConversationName" Avatar="" />
+<ConversationInfoCenter Name="@_parameters.ConversationName" Avatar="" />
+<div class="mt-auto">
+    <UserActions OnSend="@CreateConversationBySendingInitialMessage" />
+</div>
