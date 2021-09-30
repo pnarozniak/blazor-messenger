@@ -1,0 +1,14 @@
+﻿<div class="conversation-info-container">
+    <div class="avatar-container">
+        <img class="mess-avatar" src="@Avatar" />
+    </div>
+    <span>@Name</span>
+</div>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public string Avatar { get; set; } = string.Empty;
+}

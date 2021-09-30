@@ -29,12 +29,7 @@
             <Loader />
         </LoadingTemplate>
         <HasAllTemplate>
-            <div class="has-all-messages-container">
-                <div class="avatar-container">
-                    <img class="mess-avatar" src="@ConversationAvatar" />
-                </div>
-                <span>@ConversationName</span>
-            </div>
+            <ConversationInfoCenter Avatar="@ConversationAvatar" Name="@ConversationName" />
         </HasAllTemplate>
     </InfiniteScroll>
 </div>
