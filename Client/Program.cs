@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Blazored.SessionStorage;
 using messanger.Client.Repositories.Implementations;
 using messanger.Client.Repositories.Interfaces;
 using messanger.Client.Services.Implementations;
@@ -41,6 +42,7 @@ namespace messanger.Client
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddSingleton<IAppStateService, AppStateService>();
             services.AddScoped<IMessagesRepository, MessagesRepository>();
+            services.AddBlazoredSessionStorage();
         }
     }
 }
